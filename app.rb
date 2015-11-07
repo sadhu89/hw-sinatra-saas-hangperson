@@ -40,6 +40,11 @@ class HangpersonApp < Sinatra::Base
   post '/guess' do
     letter = params[:guess].to_s[0]
     ### YOUR CODE HERE ###
+    begin
+    flash[:message]="You have already used that letter." if !@game.guess letter
+    rescue ArgumentError
+      flash[:message]="Invalid guess."
+    end
     redirect '/show'
   end
   
@@ -50,6 +55,9 @@ class HangpersonApp < Sinatra::Base
   # wrong_guesses and word_with_guesses from @game.
   get '/show' do
     ### YOUR CODE HERE ###
+    res=@game.check_win_or_lose
+    redirect '/win' if res==:win
+    redirect '/lose' if res==:lose
     erb :show # You may change/remove this line
   end
   
